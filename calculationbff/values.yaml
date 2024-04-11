@@ -41,7 +41,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 8081
 
 ingress:
   enabled: false
@@ -74,7 +74,7 @@ resources: {}
 liveness:
   httpGet:
     path: /actuator/health/liveness
-    port: 8080
+    port: 8081
   initialDelaySeconds: 20
   periodSeconds: 10
   timeoutSeconds: 3
@@ -82,7 +82,7 @@ liveness:
 readiness:
   httpGet:
     path: /actuator/health/readiness
-    port: 8080
+    port: 8081
   initialDelaySeconds: 20
   periodSeconds: 10
   timeoutSeconds: 3
@@ -115,7 +115,4 @@ tolerations: []
 affinity: {}
 
 secrets:
-  DB_URL: placeholder
-  PG_USER: placeholder
-  PG_PASSWORD: placeholder
 

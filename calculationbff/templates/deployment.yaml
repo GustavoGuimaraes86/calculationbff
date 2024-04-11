@@ -37,12 +37,16 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: DB_URL
-              value: {{ .Values.secrets.DB_URL }}
-            - name: PG_USER
-              value: {{ .Values.secrets.PG_USER }}
-            - name: PG_PASSWORD
-              value: {{ .Values.secrets.PG_PASSWORD }}
+            - name: CALCULATION_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: calculation-configmap
+                  key: calculationURL
+            - name: CALCULATION_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: calculation-configmap
+                  key: calculationPort
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

@@ -1,0 +1,18 @@
+{
+  "library": "spring-boot",
+  "dateLibrary": "java8",
+  "hideGenerationTimestamp": true,
+  "modelPackage": "com.calculationbff.api.model",
+  "apiPackage": "com.calculationbff.api",
+  "invokerPackage": "com.calculationbff.api",
+  "serializableModel": false,
+  "openApiNullable": false,
+  "useTags": true,
+  "useGzipFeature": true,
+  "hateoas": false,
+  "unhandledException": true,
+  "useSpringBoot3": true,
+  "useSwaggerUI": true,
+  "interfaceOnly": true,
+  "skipDefaultInterface": true
+}

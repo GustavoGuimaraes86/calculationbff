@@ -2,13 +2,14 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.jetbrains.kotlin.jvm'
+	id 'org.hidetake.swagger.generator' version '2.19.2'
 }
 
 group = 'com.calculationbff'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
 }
 
 repositories {
@@ -17,14 +18,61 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons
+	implementation 'org.springframework.data:spring-data-commons:3.2.4'
+
+
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
 	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.2.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+	//open api code generation
+	swaggerCodegen 'org.openapitools:openapi-generator-cli:7.3.0'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
+
+	//open api ui
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.1'
+
 
 }
 
+processResources {
+	dependsOn(generateSwaggerCode)
+}
+
+swaggerSources {
+	calculation {
+		inputFile = file("${rootDir}/src/main/resources/api-def/calculationApi-openapi.yaml")
+		code {
+			language = 'spring'
+
+			configFile = file("${rootDir}/src/main/resources/api-def/config.json")
+			//what to generate. Optional.
+			components = [models: true, apis: true, supportingFiles: 'ApiUtil.java']
+			dependsOn validation //first validate the yaml
+		}
+	}
+}
+
+//Set generated code to sourceSet to be able to used it in the implementation
+compileJava.dependsOn swaggerSources.calculation.code
+sourceSets.main.java.srcDir "${swaggerSources.calculation.code.outputDir}/src/main/java"
+//sourceSets.main.resources.srcDir "${swaggerSources.calculation.code.outputDir}/src/main/resources"
+
+
+
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
 }
